@@ -42,4 +42,4 @@ module from your own code.
 ## License
 
 This module is licensed under GNU Lesser General Public License (LGPL v3). See
-lgpl-3.0.txt for details.
+LICENSE.txt for details.
