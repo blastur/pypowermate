@@ -24,7 +24,8 @@ and
 
 To listen for events (knob press & rotate):
 
-  >>> for (ts, evt, val) in p.read_event():
+  >>> while True:
+  ...     (ts, evt, val) = p.read_event()
   ...     print("%f: event %s val %d" % (ts, evt, val))
   ...
   1483389541.878913: event rotate val 1
@@ -41,35 +42,82 @@ MAGIC_ASLEEP_SHIFT = 19
 MAGIC_AWAKE_SHIFT = 20
 
 from evdev import ecodes, InputDevice
+import select
+import time
+
+class PowermateTimeoutException(Exception):
+  pass
 
 class Powermate(object):
   EVENT_BUTTON = 'button'
   EVENT_ROTATE = 'rotate'
+  BUTTON_DOWN = 1
+  BUTTON_UP = 0
 
   def __init__(self, path):
     self.dev = InputDevice(path)
 
-  def read_event(self):
-    ''' Read a Powermate input event.
+  def read_event(self, timeout = None):
+    ''' Read a Powermate event.
 
-    Block until an event (knob press or rotate) occurs and return it.
+    Arguments:
+        timeout: Timeout (in seconds). If zero is specified, read_event will
+        only poll (not block). If timeout is None, it'll block until an event
+        is received.
 
     Returns:
-        A tuple (tstamp, event, value). tstamp is a monotonic counter can be
-        used to determine elapsed time (seconds) between a previous event
+        A tuple (tstamp, event, value) if an event was read, otherwise None.
 
-        Events:
-        Powermate.EVENT_BUTTON -- Knob is pressed (value==1) or depressed
-                                  (value==0).
+        Event & value defines action:
+        Powermate.EVENT_BUTTON -- Knob is pressed (value==Powermate.BUTTON_DOWN)
+                                  or depressed (value==Powermate.BUTTON_UP).
         Powermate.EVENT_ROTATE -- Knob is rotated 'value' steps. Value is
                                   usually 1 or -1, but can be up to +- 7.
 
+        tstamp is the Linux Input Device event timestamp (seconds).
+
+    Raises:
+        PowermateTimeoutException when the timeout expires (only applicable when
+        timeout > 0).
     '''
-    for event in self.dev.read_loop():
-        if event.type == ecodes.EV_REL:
-          yield (event.timestamp(), self.EVENT_ROTATE, event.value)
-        elif event.type == ecodes.EV_KEY:
-          yield (event.timestamp(), self.EVENT_BUTTON, event.value)
+    if timeout == 0:
+      return self.__poll_event()
+
+    t0 = time.time()
+    while True:
+      if timeout is None:
+        event = self.__read_event(None)
+      else:
+        elapsed = time.time() - t0
+        if elapsed >= timeout:
+          raise PowermateTimeoutException()
+
+        event = self.__read_event(max(timeout - elapsed, 0))
+
+      if event is None:
+        continue
+      if event.type == ecodes.EV_REL:
+        return (event.timestamp(), self.EVENT_ROTATE, event.value)
+      elif event.type == ecodes.EV_KEY:
+        return (event.timestamp(), self.EVENT_BUTTON, event.value)
+
+  def __poll_event(self):
+    ''' Finds the first button or rotate event in the pending queue '''
+    while True:
+      event = self.dev.read_one()
+      if event is None:
+        return None
+      if event.type == ecodes.EV_REL:
+        return (event.timestamp(), self.EVENT_ROTATE, event.value)
+      elif event.type == ecodes.EV_KEY:
+        return (event.timestamp(), self.EVENT_BUTTON, event.value)
+
+  def __read_event(self, timeout):
+    if timeout is None:
+      (r, _, _) = select.select([self.dev.fileno()], [], [])
+    else:
+      (r, _, _) = select.select([self.dev.fileno()], [], [], timeout)
+    return self.dev.read_one()
 
   def set_cfg(self, brightness, pulse_speed, asleep=False, awake=True, pulse_table=0):
     ''' Writes powermate config.

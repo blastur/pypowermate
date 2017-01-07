@@ -18,9 +18,10 @@ if __name__ == '__main__':
 	print("- Rotate the knob to test different pulse speeds.")
 	print("- Rotate the knob while it's pushed test different brightness levels.")
 
-	for (ts, evt, val) in p.read_event():
-		if evt == p.EVENT_BUTTON:
-			if val == 0:
+	while True:
+		(ts, evt, val) = p.read_event()
+		if evt == Powermate.EVENT_BUTTON:
+			if val == Powermate.BUTTON_UP:
 				speed_mode = True
 				print("Speed mode activated.")
 			else:
@@ -31,9 +32,9 @@ if __name__ == '__main__':
 				speed += val
 				speed = min(max(speed, 0), 510)
 				print("Setting pulse speed %d" % speed)
-				p.set_cfg(brightness, speed, True, True)
+				p.set_pulse(speed)
 			else:
 				brightness += val
 				brightness = min(max(brightness, 0), 255)
 				print("Setting brightness level %d" % brightness)
-				p.set_cfg(brightness, speed, False, False)
+				p.set_steady_led(brightness)

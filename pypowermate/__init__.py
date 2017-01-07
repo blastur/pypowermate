@@ -1,1 +1,1 @@
-from powermate import Powermate
+from powermate import Powermate, PowermateTimeoutException
