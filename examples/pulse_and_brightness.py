@@ -2,39 +2,58 @@
 
 import time
 import sys
-from pypowermate import Powermate
+from pypowermate.powermate import Powermate
+import glob
 
 if __name__ == '__main__':
-	if len(sys.argv) != 2:
-		sys.stderr.write('usage: %s <input device>\n' % sys.argv[0])
+	if len(sys.argv) > 1 :
+		sys.stderr.write('usage: %s \n  the command has no argument' % sys.argv[0])
+		sys.exit(1)
+	powermates=glob.glob('/dev/input/by-id/*PowerMate*')
+	if len(powermates) == 0 :
+		print('no powermate found !')
 		sys.exit(1)
 
-	p = Powermate(sys.argv[1])
+	p = Powermate(powermates[0])
 
 	speed = 255
 	brightness = 255
 	speed_mode = True
 
+	count = 0
+
 	print("- Rotate the knob to test different pulse speeds.")
 	print("- Rotate the knob while it's pushed test different brightness levels.")
 
 	while True:
-		(ts, evt, val) = p.read_event()
+		retval = p.read_event(0) # with no timeout value, the read will wait
+		if retval == None :
+			time.sleep(0.05)
+			count=(count+1)%10
+			if count == 0:
+				print('.',end='',flush=True)
+			continue
+		else :
+			(ts,evt,val) = retval
 		if evt == Powermate.EVENT_BUTTON:
 			if val == Powermate.BUTTON_UP:
 				speed_mode = True
-				print("Speed mode activated.")
+				print("Speed mode activated.",flush=True)
 			else:
 				speed_mode = False
-				print("Brightness mode activated.")
+				print("Brightness mode activated.",flush=True)
 		elif evt == p.EVENT_ROTATE:
 			if speed_mode:
 				speed += val
-				speed = min(max(speed, 0), 510)
-				print("Setting pulse speed %d" % speed)
-				p.set_pulse(speed)
+				speed = min(max(speed, 240), 280)
+				ispeed=speed
+				if speed == 240 :
+					ispeed=0
+				print("Setting pulse speed %d" % ispeed,flush=True)
+				p.set_pulse(ispeed)
 			else:
 				brightness += val
 				brightness = min(max(brightness, 0), 255)
-				print("Setting brightness level %d" % brightness)
+				print("Setting brightness level %d" % brightness,flush=True)
 				p.set_steady_led(brightness)
+		
