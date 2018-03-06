@@ -31,17 +31,18 @@ if __name__ == '__main__':
 			time.sleep(0.05)
 			count=(count+1)%10
 			if count == 0:
-				print('.',end='',flush=True)
+				sys.stdout.write('.')
+				sys.stdout.flush()
 			continue
 		else :
 			(ts,evt,val) = retval
 		if evt == Powermate.EVENT_BUTTON:
 			if val == Powermate.BUTTON_UP:
 				speed_mode = True
-				print("Speed mode activated.",flush=True)
+				print("Speed mode activated.")
 			else:
 				speed_mode = False
-				print("Brightness mode activated.",flush=True)
+				print("Brightness mode activated.")
 		elif evt == p.EVENT_ROTATE:
 			if speed_mode:
 				speed += val
@@ -49,11 +50,11 @@ if __name__ == '__main__':
 				ispeed=speed
 				if speed == 240 :
 					ispeed=0
-				print("Setting pulse speed %d" % ispeed,flush=True)
+				print("Setting pulse speed %d" % ispeed)
 				p.set_pulse(ispeed)
 			else:
 				brightness += val
 				brightness = min(max(brightness, 0), 255)
-				print("Setting brightness level %d" % brightness,flush=True)
+				print("Setting brightness level %d" % brightness)
 				p.set_steady_led(brightness)
 		
