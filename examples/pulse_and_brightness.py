@@ -5,6 +5,9 @@ import sys
 from pypowermate.powermate import Powermate
 import glob
 
+MinSpeed=240	#0
+MaxSpeed=280	#512
+
 if __name__ == '__main__':
 	if len(sys.argv) > 1 :
 		sys.stderr.write('usage: %s \n  the command has no argument' % sys.argv[0])
@@ -46,9 +49,9 @@ if __name__ == '__main__':
 		elif evt == p.EVENT_ROTATE:
 			if speed_mode:
 				speed += val
-				speed = min(max(speed, 240), 280)
+				speed = min(max(speed, MinSpeed), MaxSpeed)
 				ispeed=speed
-				if speed == 240 :
+				if speed == MinSpeed :
 					ispeed=0
 				print("Setting pulse speed %d" % ispeed)
 				p.set_pulse(ispeed)
