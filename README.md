@@ -15,9 +15,10 @@ and will therefore only work on Linux systems.
 
 ## Getting started
 
-1. Install using pip:
+1. Install using setup.py:
 	```
-	$ pip install .
+	$ cd pypowermate-master
+	$ sudo python setup.py install
 	```
 2. Ensure "powermate" kernel module is loaded in your system. It ships with
 most modern Linux distros and should insmod automatically when you plug in
@@ -27,11 +28,18 @@ the PowerMate.
 	```
 3. Ensure your user can read/write the powermate input device. On Ubuntu,
 this means adding yourself to the "input" usergroup.
+	```
+	$ sudo groupadd input
+	$ sudo usermod -a -G input "$USER"
+	$ echo 'KERNEL=="event*", NAME="input/%k", MODE="660", GROUP="input"' | sudo tee -a /etc/udev/rules.d/99-input.rules
+	```
+then reboot
+
 4. Testrun the example script.
 	```
-	$ python examples/pulse_and_brightness.py /dev/input/by-id/usb-Griffin_Technology_Inc._Griffin_PowerMate-event-if00
+	$ python examples/pulse_and_brightness.py
 	```
-(Device path may differ in your case)
+
 
 
 ## API
