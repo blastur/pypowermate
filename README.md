@@ -15,12 +15,12 @@ and will therefore only work on Linux systems.
 
 ## Getting started
 
-For python3, just use python3 instead of python in all command
+For python3, just use python3/pip3 instead of python/pip2 in all command.
 
-1. Install using setup.py:
+1. Install using pip:
 	```
 	$ cd pypowermate-master
-	$ sudo python setup.py install
+	$ sudo pip2 install .
 	```
 2. Ensure "powermate" kernel module is loaded in your system. It ships with
 most modern Linux distros and should insmod automatically when you plug in
