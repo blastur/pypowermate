@@ -5,7 +5,7 @@ The PowerMate is an "assignable controller" in the shape of a knob. The knob
 can be rotated, pressed and also features a LED at its base that can be used
 to indicate events to the operator.
 
-This module provides functions to read knob events (rotate/press) and to set
+This module provides functions to read knob events (rotate/press) and to write/set
 the LED brightness and pulse speed (when in "pulse"-mode).
 
 The module interfaces with the device through the powermate Linux kernel driver
@@ -14,6 +14,8 @@ and will therefore only work on Linux systems.
 [1]: https://griffintechnology.com/us/powermate
 
 ## Getting started
+
+For python3, just use python3 instead of python in all command
 
 1. Install using setup.py:
 	```
@@ -40,6 +42,7 @@ then reboot
 	$ python examples/pulse_and_brightness.py
 	```
 
+Depending on the exact model, you will have to change MinSpeed and MaxSpeed values.
 
 
 ## API
