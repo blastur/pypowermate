@@ -2,7 +2,7 @@
 
 import time
 import sys
-from pypowermate.powermate import Powermate
+import pypowermate
 import glob
 
 MinSpeed=240	#0
@@ -17,7 +17,7 @@ if __name__ == '__main__':
 		print('no powermate found !')
 		sys.exit(1)
 
-	p = Powermate(powermates[0])
+	p = pypowermate.Powermate(powermates[0])
 
 	speed = 255
 	brightness = 255
@@ -39,8 +39,8 @@ if __name__ == '__main__':
 			continue
 		else :
 			(ts,evt,val) = retval
-		if evt == Powermate.EVENT_BUTTON:
-			if val == Powermate.BUTTON_UP:
+		if evt == pypowermate.Powermate.EVENT_BUTTON:
+			if val == pypowermate.Powermate.BUTTON_UP:
 				speed_mode = True
 				print("Speed mode activated.")
 			else:
