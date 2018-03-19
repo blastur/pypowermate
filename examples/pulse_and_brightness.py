@@ -2,6 +2,7 @@
 
 import time
 import sys
+#~ from pypowermate.powermate import Powermate
 import pypowermate
 import glob
 
@@ -9,15 +10,21 @@ MinSpeed=240	#0
 MaxSpeed=280	#512
 
 if __name__ == '__main__':
+	if len(sys.argv) > 2 :
+		sys.stderr.write('usage: %s [device_path]\n  if no arg, use glob to get first powermate' % sys.argv[0])
+		sys.exit(1)
 	if len(sys.argv) > 1 :
-		sys.stderr.write('usage: %s \n  the command has no argument' % sys.argv[0])
-		sys.exit(1)
-	powermates=glob.glob('/dev/input/by-id/*PowerMate*')
-	if len(powermates) == 0 :
-		print('no powermate found !')
-		sys.exit(1)
-
-	p = pypowermate.Powermate(powermates[0])
+		device=sys.argv[1]
+	else :
+		powermates=glob.glob('/dev/input/by-id/*PowerMate*')
+		if len(powermates) == 0 :
+			print('no powermate found !')
+			sys.exit(1)
+		device=powermates[0]
+	
+	
+	# open the device
+	p = pypowermate.Powermate(device)
 
 	speed = 255
 	brightness = 255
