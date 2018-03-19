@@ -2,7 +2,6 @@
 
 import time
 import sys
-#~ from pypowermate.powermate import Powermate
 import pypowermate
 import glob
 
