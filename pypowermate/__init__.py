@@ -1,1 +1,1 @@
-
+from pypowermate.powermate import Powermate, PowermateTimeoutException
