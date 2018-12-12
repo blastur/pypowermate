@@ -41,6 +41,18 @@ this means adding yourself to the "input" usergroup.
 See the documentation in pypowermate/powermate.py for details on how to use the
 module from your own code.
 
+## Tests
+
+A small number of semi-automated tests can be found in the tests/ subdir. They
+require a Knob-device plugged in and some interaction to run.
+
+	```
+	$ python tests/test_powermate.py
+	```
+
+The tests will use the first found Powermate, should there be several connected
+at the same time.
+
 ## License
 
 This module is licensed under GNU Lesser General Public License (LGPL v3). See
