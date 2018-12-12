@@ -31,9 +31,19 @@ the PowerMate.
 this means adding yourself to the "input" usergroup.
 4. Testrun the example script.
 	```
+	$ python examples/pulse_and_brightness.py
+	```
+
+This will run a small example program that lets you control the LED behaviour
+by pressing and/or rotating the knob. The example will use the first Powermate
+knob it finds; if you have multiple, you may optionally specify the device path
+to the example, like so:
+
+	```
 	$ python examples/pulse_and_brightness.py /dev/input/by-id/usb-Griffin_Technology_Inc._Griffin_PowerMate-event-if00
 	```
-(Device path may differ in your case)
+
+(Your device path may differ)
 
 
 ## API

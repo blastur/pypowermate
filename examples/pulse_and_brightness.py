@@ -2,14 +2,19 @@
 
 import time
 import sys
+import glob
 from pypowermate import Powermate
 
 if __name__ == '__main__':
-	if len(sys.argv) != 2:
-		sys.stderr.write('usage: %s <input device>\n' % sys.argv[0])
-		sys.exit(1)
-
-	p = Powermate(sys.argv[1])
+	if len(sys.argv) == 2:
+		p = Powermate(sys.argv[1])
+	else:
+		paths = glob.glob('/dev/input/by-id/usb-Griffin_*_PowerMate*')
+		if not paths:
+			sys.stderr.write('error: no powermate found\n')
+			sys.exit(1)
+		print('Detected powermate at %s' % paths[0])
+		p = Powermate(paths[0])	
 
 	speed = 255
 	brightness = 255
