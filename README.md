@@ -11,6 +11,8 @@ the LED brightness and pulse speed (when in "pulse"-mode).
 The module interfaces with the device through the powermate Linux kernel driver
 and will therefore only work on Linux systems.
 
+Both Python 2.7 and Python 3.x are supported.
+
 [1]: https://griffintechnology.com/us/powermate
 
 ## Getting started

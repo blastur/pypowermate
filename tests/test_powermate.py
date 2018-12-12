@@ -1,6 +1,7 @@
 import unittest
 import glob
 import time
+from builtins import input
 from pypowermate import Powermate, PowermateTimeoutException
 
 POWERMATE_GLOB_STRING = '/dev/input/by-id/usb-Griffin_Technology_Inc._Griffin_PowerMate*'
@@ -19,21 +20,21 @@ class TestPowermate(unittest.TestCase):
         del self.pm
 
     def testReadWithTimeout(self):
-        raw_input("Rotate the knob one step to the left. Hit Enter when you're done.")
+        input("Rotate the knob one step to the left. Hit Enter when you're done.")
 
         # Read the button down event
         event = self.pm.read_event(0.5)
         self.assertIsNotNone(event)
         (ts, evt, val) = event
-        self.assertEquals(evt, Powermate.EVENT_ROTATE)
+        self.assertEqual(evt, Powermate.EVENT_ROTATE)
         self.assertTrue(val < 0)
 
     def testPolledEvents(self):
-        raw_input("Rotate the knob one step to the right. Hit Enter when you're done.")
+        input("Rotate the knob one step to the right. Hit Enter when you're done.")
         event = self.pm.read_event(0)
         self.assertIsNotNone(event)
         (ts, evt, val) = event
-        self.assertEquals(evt, Powermate.EVENT_ROTATE)
+        self.assertEqual(evt, Powermate.EVENT_ROTATE)
         self.assertTrue(val > 0)
 
     def testTimeout(self):
@@ -42,13 +43,13 @@ class TestPowermate(unittest.TestCase):
 
     def testSteadyLed(self):
         self.pm.set_steady_led(255)
-        answer = raw_input("Is the Powermate LED lit (not pulsing?) (y/n)")
+        answer = input("Is the Powermate LED lit (not pulsing?) (y/n)")
         if answer.upper() != "Y":
             self.fail("LED did not light up as expected")
 
     def testPulse(self):
         self.pm.set_pulse(255)
-        answer = raw_input("Is the Powermate LED pulsing (y/n)")
+        answer = input("Is the Powermate LED pulsing (y/n)")
         if answer.upper() != "Y":
             self.fail("LED did not pulse as expected")
 
