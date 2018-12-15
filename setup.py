@@ -1,6 +1,6 @@
-from distutils.core import setup
+from setuptools import setup
 
-version="2.0.1"
+version="2.0.2"
 setup(name='pypowermate',
       version=version,
       packages=['pypowermate'],
